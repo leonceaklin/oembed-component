@@ -18,28 +18,38 @@ export default {
     proxy: {
       type: String,
       default: ''
+    },
+    inlineStyle: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
     return {
       resJson: Object,
       errorMessage: null,
-      boxStyle: {
-        fontFamily: '-apple-system, system-ui, Roboto, sans-serif',
-        padding: '15px',
-        border: '1px solid grey',
-        color: 'grey',
-        borderRadius: '3px',
-        textAlign: 'center'
+    }
+  },
+  computed: {
+    boxStyle(){
+      if(this.inlineStyle){
+        return {
+          fontFamily: '-apple-system, system-ui, Roboto, sans-serif',
+          padding: '15px',
+          border: '1px solid grey',
+          color: 'grey',
+          borderRadius: '3px',
+          textAlign: 'center'
+        }
       }
     }
   },
-  async created () {
+  async mounted () {
     let matchedPattern = this.getOembedEnpoint(this.url)
     if (matchedPattern) {
       try {
         matchedPattern = matchedPattern.replace('http://', 'https://')
-        let res = await fetch(this.proxy + matchedPattern + '?url=' + this.url)
+        let res = await fetch(this.proxy + matchedPattern + '?format=json&url=' + this.url)
         this.resJson = await res.json()
         this.setInnerHtml(this.$el, '<div class="__v-oembed-content">' + this.resJson.html + '</div>')
       } catch (error) {
@@ -57,6 +67,9 @@ export default {
       })[0]
     },
     setInnerHtml: (elm, html) => {
+      if(html == undefined){
+        this.errorMessage = 'No HTML Specified'
+      }
       elm.innerHTML = html
       Array.from(elm.querySelectorAll('script')).forEach(el => {
         let newEl = document.createElement('script')
