@@ -31,7 +31,7 @@ export default {
     }
   },
   computed: {
-    boxStyle: () => {
+    boxStyle () {
       if (this.inlineStyle) {
         return {
           fontFamily: '-apple-system, system-ui, Roboto, sans-serif',
