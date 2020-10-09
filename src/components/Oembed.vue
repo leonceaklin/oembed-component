@@ -27,12 +27,12 @@ export default {
   data () {
     return {
       resJson: Object,
-      errorMessage: null,
+      errorMessage: null
     }
   },
   computed: {
-    boxStyle(){
-      if(this.inlineStyle){
+    boxStyle: () => {
+      if (this.inlineStyle) {
         return {
           fontFamily: '-apple-system, system-ui, Roboto, sans-serif',
           padding: '15px',
@@ -67,7 +67,7 @@ export default {
       })[0]
     },
     setInnerHtml: (elm, html) => {
-      if(html == undefined){
+      if (html === undefined) {
         this.errorMessage = 'No HTML Specified'
       }
       elm.innerHTML = html
