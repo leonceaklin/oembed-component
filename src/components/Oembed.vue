@@ -44,19 +44,15 @@ export default {
       }
     }
   },
-  async mounted () {
-    let matchedPattern = this.getOembedEnpoint(this.url)
-    if (matchedPattern) {
-      try {
-        matchedPattern = matchedPattern.replace('http://', 'https://')
-        let res = await fetch(this.proxy + matchedPattern + '?format=json&url=' + this.url)
-        this.resJson = await res.json()
-        this.setInnerHtml(this.$el, '<div class="__v-oembed-content">' + this.resJson.html + '</div>')
-      } catch (error) {
-        this.errorMessage = 'Domain is not allowed'
-      }
-    } else {
-      this.errorMessage = 'Endpoint isn\'t supported'
+  mounted () {
+    this.setup()
+  },
+  watch: {
+    url () {
+      this.setup()
+    },
+    proxy () {
+      this.setup()
     }
   },
   methods: {
@@ -80,6 +76,21 @@ export default {
         newEl.appendChild(document.createTextNode(el.innerHTML))
         el.parentNode.replaceChild(newEl, el)
       })
+    },
+    async setup () {
+      let matchedPattern = this.getOembedEnpoint(this.url)
+      if (matchedPattern) {
+        try {
+          matchedPattern = matchedPattern.replace('http://', 'https://')
+          let res = await fetch(this.proxy + matchedPattern + '?format=json&url=' + this.url)
+          this.resJson = await res.json()
+          this.setInnerHtml(this.$el, '<div class="__v-oembed-content">' + this.resJson.html + '</div>')
+        } catch (error) {
+          this.errorMessage = 'Domain is not allowed'
+        }
+      } else {
+        this.errorMessage = 'Endpoint isn\'t supported'
+      }
     }
   }
 }
