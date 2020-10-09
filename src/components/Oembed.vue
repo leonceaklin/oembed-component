@@ -71,6 +71,7 @@ export default {
         this.errorMessage = 'No HTML Specified'
       }
       elm.innerHTML = html
+      this.$emit('load')
       Array.from(elm.querySelectorAll('script')).forEach(el => {
         let newEl = document.createElement('script')
         Array.from(el.attributes).forEach(el => {
