@@ -1,5 +1,5 @@
 <template>
-  <div class="__v-oembed">
+  <div ref="container" class="__v-oembed">
     <div class="__v-oembed-loading" :style="boxStyle" v-if="!resJson.provider_name && !errorMessage">Loading....</div>
     <div class="__v-oembed-error" :style="boxStyle" v-if="errorMessage">{{errorMessage}}</div>
   </div>
@@ -68,13 +68,15 @@ export default {
       }
       elm.innerHTML = html
       this.$emit('load')
-      Array.from(elm.querySelectorAll('script')).forEach(el => {
-        let newEl = document.createElement('script')
-        Array.from(el.attributes).forEach(el => {
-          newEl.setAttribute(el.name, el.value)
+      this.$nextTick(() => {
+        Array.from(elm.querySelectorAll('script')).forEach(el => {
+          let newEl = document.createElement('script')
+          Array.from(el.attributes).forEach(el => {
+            newEl.setAttribute(el.name, el.value)
+          })
+          newEl.appendChild(document.createTextNode(el.innerHTML))
+          el.parentNode.replaceChild(newEl, el)
         })
-        newEl.appendChild(document.createTextNode(el.innerHTML))
-        el.parentNode.replaceChild(newEl, el)
       })
     },
     async setup () {
